@@ -11,7 +11,7 @@ db()
 const app = express();
 
 app.use(express.json());
-
+app.get('/',(re,res)=>{res.json({"success":true})})
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 
