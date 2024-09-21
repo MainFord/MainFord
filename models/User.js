@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema({
   photoUrl: { type: String, required: true }, // Cloudinary image URL
   adminApproved: { type: Boolean, default: false },
   referralCode: { type: String, unique: true, required: true }, // Unique referral code
-  referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  referredBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User',
+    default: null  // Default value set to null
+  },
   paymentHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Payment' }],
 }, { timestamps: true });
 
