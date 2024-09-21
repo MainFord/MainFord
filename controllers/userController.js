@@ -9,15 +9,13 @@ import { emailVerificationTemplate } from '../utils/emailTemplates.js';
 
 // Register user with JWT token generation
 export const registerUser = async (req, res) => {
-  const { name, email, phone, dob, referredBy, password } = req.body;
+  const { name, email, phone, dob, referredBy } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
 
     // Encrypt password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Upload photo to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
@@ -32,7 +30,7 @@ export const registerUser = async (req, res) => {
       referredBy,
       password: hashedPassword,
       referralCode,
-      photoUrl: result.secure_url,
+      paymentUrlOfReg: result.secure_url,
       adminApproved: false,
     });
 
