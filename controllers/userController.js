@@ -28,7 +28,6 @@ export const registerUser = async (req, res) => {
       phone,
       dob,
       referredBy,
-      password: hashedPassword,
       referralCode,
       paymentUrlOfReg: result.secure_url,
       adminApproved: false,
