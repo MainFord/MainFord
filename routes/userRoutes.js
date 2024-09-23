@@ -25,8 +25,28 @@ const upload = multer({ storage: storage }); // Use the configured storage
 
 const router = express.Router();
 
-router.post('/register', upload.single('screenshort'), registerUser); // User registration with photo
-router.post('/login', loginUser); // User login
-router.get('/profile', protect, getUserProfile); // Get user profile with token-based auth
+// Middleware for logging requests
+router.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} request to ${req.originalUrl}`);
+  next();
+});
+
+// User registration with photo
+router.post('/register', upload.single('screenshot'), async (req, res) => {
+  console.log("Image upload result:", req.file); // Log the uploaded file details
+  await registerUser(req, res);
+});
+
+// User login
+router.post('/login', async (req, res) => {
+  console.log("Login attempt with email:", req.body.email);
+  await loginUser(req, res);
+});
+
+// Get user profile with token-based auth
+router.get('/profile', protect, async (req, res) => {
+  console.log("User profile request for user ID:", req.user._id);
+  await getUserProfile(req, res);
+});
 
 export default router;
