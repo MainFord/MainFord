@@ -2,9 +2,12 @@ import crypto from 'crypto';
 
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRYPTION_KEY;
-const iv = crypto.randomBytes(16);
 
 export const encrypt = (text) => {
+  // Return empty input as is
+  if (!text) return text;
+
+  const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
@@ -12,6 +15,9 @@ export const encrypt = (text) => {
 };
 
 export const decrypt = (text) => {
+  // Return empty input as is
+  if (!text) return text;
+
   const parts = text.split(':');
   const iv = Buffer.from(parts.shift(), 'hex');
   const encryptedText = Buffer.from(parts.join(':'), 'hex');

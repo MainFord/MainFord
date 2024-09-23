@@ -25,7 +25,7 @@ const upload = multer({ storage: storage }); // Use the configured storage
 
 const router = express.Router();
 
-router.post('/register', upload.single('photo'), registerUser); // User registration with photo
+router.post('/register', upload.single('screenshort'), registerUser); // User registration with photo
 router.post('/login', loginUser); // User login
 router.get('/profile', protect, getUserProfile); // Get user profile with token-based auth
 
