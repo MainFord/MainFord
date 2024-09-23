@@ -9,7 +9,7 @@ import { emailVerificationTemplate } from '../utils/emailTemplates.js';
 
 export const registerUser = async (req, res) => {
   const { name, email, phone, dob, referredBy } = req.body;
-  
+
   // Check if the file is uploaded
   if (!req.file) {
     return res.status(400).json({ message: 'Payment screenshot is required.' });
@@ -24,6 +24,20 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    let referrerId = null;
+
+    // Check if referredBy exists
+    if (referredBy) {
+      const referrer = await User.findOne({ referralCode: referredBy });
+
+      if (!referrer) {
+        return res.status(400).json({ message: 'Invalid referral code' });
+      }
+
+      // Set the referredBy field to the referrer's _id
+      referrerId = referrer._id;
+    }
+
     const referralCode = generateReferralCode();
 
     const newUser = await User.create({
@@ -31,7 +45,7 @@ export const registerUser = async (req, res) => {
       email,
       phone,
       dob,
-      referredBy,
+      referredBy: referrerId, // Set to the referrer’s _id
       referralCode,
       paymentUrlOfReg,
       adminApproved: false,
@@ -52,6 +66,25 @@ export const registerUser = async (req, res) => {
 
 
 
+export const getReferrals = async (req, res) => {
+  const user = req.user;  // User is attached from the protect middleware
+
+  try {
+    // Find users referred by the authenticated user
+    const referrals = await User.find({ referredBy: user._id }).select('name email');
+
+    // Count the number of referrals
+    const referralCount = referrals.length;
+
+    res.status(200).json({
+      referralCount,
+      referrals, // List of referral details
+    });
+  } catch (error) {
+    console.error("Error fetching referrals:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
 
 
 // Login function with JWT token

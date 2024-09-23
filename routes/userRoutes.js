@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from 'cloudinary';
-import { registerUser, loginUser, getUserProfile } from '../controllers/userController.js';
+import { registerUser, loginUser, getUserProfile, getReferrals } from '../controllers/userController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 
 // Configure Cloudinary
@@ -50,4 +50,9 @@ router.get('/profile', protect, async (req, res) => {
   await getUserProfile(req, res);
 });
 
+
+router.get('/refferals', protect, async (req, res) => {
+  console.log("User profile request for user ID:", req.user._id);
+  await getReferrals(req, res);
+});
 export default router;
