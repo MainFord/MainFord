@@ -6,10 +6,10 @@ import db from './config/db.js';
 
 dotenv.config();
 
-db();
 
 const app = express();
 
+db();
 app.use(express.json());
 
 // Sample route
