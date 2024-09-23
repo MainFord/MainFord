@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, getUserProfile } from '../controllers/userController.js';
+import { registerUser, loginUser, getUserProfile, uploadImage } from '../controllers/userController.js';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from 'cloudinary';
@@ -26,7 +26,8 @@ const upload = multer({ storage: storage }); // Use the configured storage
 
 const router = express.Router();
 
-router.post('/register', upload.single('screenshort'), registerUser); // User registration with photo
+router.post('/upload', upload.single('screenshot'), uploadImage);
+router.post('/register', registerUser); // User registration with photo
 router.post('/login', loginUser); // User login
 router.get('/profile', protect, getUserProfile); // Get user profile with token-based auth
 
