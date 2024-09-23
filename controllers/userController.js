@@ -16,11 +16,10 @@ export const registerUser = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
 
-    // Check if file was uploaded
-    if (!req.file) return res.status(400).json({ message: 'Photo upload is required' });
+    // Encrypt password
 
-    // The upload to Cloudinary is handled by Multer, so you can access the secure URL directly from req.file
-    const paymentUrlOfReg = req.file.path; // req.file.path already has the secure URL from Cloudinary
+    // Upload photo to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
     const referralCode = generateReferralCode();
 
@@ -31,13 +30,13 @@ export const registerUser = async (req, res) => {
       dob,
       referredBy,
       referralCode,
-      paymentUrlOfReg, // Use the URL directly from the file
+      paymentUrlOfReg: result.secure_url,
       adminApproved: false,
     });
 
-    // Send verification email (asynchronous)
-    const emailToken = generateReferralCode(); // Random token for verification
-    newUser.emailVerificationToken = emailToken;
+    // // Send verification email (asynchronous)
+    // const emailToken = generateReferralCode(); // Random token for verification
+    // newUser.emailVerificationToken = emailToken;
     await newUser.save();
 
     // const emailHtml = emailVerificationTemplate(emailToken);
@@ -51,7 +50,6 @@ export const registerUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 // Login function with JWT token
 export const loginUser = async (req, res) => {
