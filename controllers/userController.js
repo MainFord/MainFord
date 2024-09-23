@@ -8,26 +8,24 @@ import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
 
 export const registerUser = async (req, res) => {
-  console.log("Register User API called with body:", req.body);
-  const { name, email, phone, dob, referredBy, paymentUrlOfReg } = req.body;
+  const { name, email, phone, dob, referredBy } = req.body;
+  
+  // Check if the file is uploaded
+  if (!req.file) {
+    return res.status(400).json({ message: 'Payment screenshot is required.' });
+  }
 
-  console.time("Total Register User Operation");
+  const paymentUrlOfReg = req.file.path; // Set paymentUrlOfReg from the uploaded image URL
 
   try {
-    console.time("Check if User Exists");
     const userExists = await User.findOne({ email });
-    console.timeEnd("Check if User Exists");
 
     if (userExists) {
-      console.log("User already exists:", email);
-      console.timeEnd("Total Register User Operation");
       return res.status(400).json({ message: 'User already exists' });
     }
 
     const referralCode = generateReferralCode();
-    console.log("Generated referral code:", referralCode);
 
-    console.time("Create New User");
     const newUser = await User.create({
       name,
       email,
@@ -38,30 +36,20 @@ export const registerUser = async (req, res) => {
       paymentUrlOfReg,
       adminApproved: false,
     });
-    console.timeEnd("Create New User");
-
-    console.log("New user created:", newUser);
 
     // Optionally send verification email (commented out)
     // const emailToken = generateReferralCode(); // Random token for verification
     // newUser.emailVerificationToken = emailToken;
     // await newUser.save();
 
-    console.time("Save New User");
-    await newUser.save();
-    console.timeEnd("Save New User");
-
     const token = generateToken(newUser._id);
-    console.log("Generated JWT token for user:", newUser._id);
-
-    console.timeEnd("Total Register User Operation");
     res.status(201).json({ newUser, token });
   } catch (error) {
     console.error("Error in registerUser:", error);
-    console.timeEnd("Total Register User Operation");
     res.status(400).json({ message: error.message });
   }
 };
+
 
 
 

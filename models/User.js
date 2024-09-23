@@ -28,8 +28,6 @@ const userSchema = new mongoose.Schema({
       default: ''  // Default value set to an empty string
     },
   },
-  
-  photoUrl: { type: String, required: true }, // Cloudinary image URL
   adminApproved: { type: Boolean, default: false },
   referralCode: { type: String, unique: true, required: true }, // Unique referral code
   referredBy: { 
