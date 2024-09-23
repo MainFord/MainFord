@@ -81,6 +81,7 @@ export const loginUser = async (req, res) => {
 // Get authenticated user profile
 export const getUserProfile = async (req, res) => {
   const user = req.user;  // User is attached from the protect middleware
+  
 
   res.status(200).json({
     name: user.name,
@@ -91,5 +92,6 @@ export const getUserProfile = async (req, res) => {
     paymentHistory: user.paymentHistory,
     adminApproved: user.adminApproved,
     photoUrl: user.photoUrl,
+
   });
 };
