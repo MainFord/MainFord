@@ -6,9 +6,11 @@ import { sendEmail } from '../config/nodemailer.js';
 import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
+import db from '../config/db.js';
 
 // Register user with JWT token generation
 export const registerUser = async (req, res) => {
+  db()
   const { name, email, phone, dob, referredBy } = req.body;
 
   try {
