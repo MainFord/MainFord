@@ -6,21 +6,21 @@ import { sendEmail } from '../config/nodemailer.js';
 import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
-import db from '../config/db.js';
-
 // Register user with JWT token generation
+
+
 export const registerUser = async (req, res) => {
-  db()
   const { name, email, phone, dob, referredBy } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
 
-    // Encrypt password
+    // Check if file was uploaded
+    if (!req.file) return res.status(400).json({ message: 'Photo upload is required' });
 
-    // Upload photo to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
+    // The upload to Cloudinary is handled by Multer, so you can access the secure URL directly from req.file
+    const paymentUrlOfReg = req.file.path; // req.file.path already has the secure URL from Cloudinary
 
     const referralCode = generateReferralCode();
 
@@ -31,7 +31,7 @@ export const registerUser = async (req, res) => {
       dob,
       referredBy,
       referralCode,
-      paymentUrlOfReg: result.secure_url,
+      paymentUrlOfReg, // Use the URL directly from the file
       adminApproved: false,
     });
 
@@ -40,8 +40,8 @@ export const registerUser = async (req, res) => {
     newUser.emailVerificationToken = emailToken;
     await newUser.save();
 
-    const emailHtml = emailVerificationTemplate(emailToken);
-    await sendEmail(email, 'Verify Your Email', emailHtml);
+    // const emailHtml = emailVerificationTemplate(emailToken);
+    // await sendEmail(email, 'Verify Your Email', emailHtml);
 
     // Generate JWT token
     const token = generateToken(newUser._id);
@@ -51,6 +51,7 @@ export const registerUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // Login function with JWT token
 export const loginUser = async (req, res) => {
