@@ -6,30 +6,19 @@ import { sendEmail } from '../config/nodemailer.js';
 import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
+
 // Register user with JWT token generation
-
-export const uploadImage = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'Photo upload is required' });
-    }
-
-    const result = req.file.path; // The secure URL is already provided by Multer with Cloudinary
-
-    res.status(200).json({ secureUrl: result });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 export const registerUser = async (req, res) => {
-  const { name, email, phone, dob, referredBy, paymentUrlOfReg } = req.body;
+  const { name, email, phone, dob, referredBy } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
 
-    // Encrypt password here (you should handle password encryption)
+    // Encrypt password
+
+    // Upload photo to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
     const referralCode = generateReferralCode();
 
@@ -40,11 +29,11 @@ export const registerUser = async (req, res) => {
       dob,
       referredBy,
       referralCode,
-      paymentUrlOfReg, // This will now come from the upload API response
+      paymentUrlOfReg: result.secure_url,
       adminApproved: false,
     });
 
-    // // Send verification email (asynchronous)
+    // Send verification email (asynchronous)
     // const emailToken = generateReferralCode(); // Random token for verification
     // newUser.emailVerificationToken = emailToken;
     await newUser.save();
@@ -60,7 +49,6 @@ export const registerUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 // Login function with JWT token
 export const loginUser = async (req, res) => {

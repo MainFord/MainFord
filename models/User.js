@@ -11,14 +11,20 @@ const userSchema = new mongoose.Schema({
   accountDetails: {
     accountNumber: { 
       type: String, 
+      get: decrypt, 
+      set: encrypt, 
       default: ''  // Default value set to an empty string
     },
     ifsc: { 
-      type: String,
+      type: String, 
+      get: decrypt, 
+      set: encrypt, 
       default: ''  // Default value set to an empty string
     },
     holderName: { 
-      type: String,
+      type: String, 
+      get: decrypt, 
+      set: encrypt, 
       default: ''  // Default value set to an empty string
     },
   },
