@@ -125,7 +125,13 @@ export const getUserProfile = async (req, res) => {
     paymentHistory: user.paymentHistory,
     adminApproved: user.adminApproved,
     photoUrl: user.photoUrl,
-    referredBy: user.referredBy
-
+    referredBy: user.referredBy,
+    courses: user.courses
   });
+};
+
+export const checkAdminApprove = async (req,res) => {
+  const user = req.user ;
+  const isApproved = user.adminApproved;
+  res.json({ isApproved })
 };

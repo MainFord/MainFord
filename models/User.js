@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
   },
   paymentUrlOfReg: {type: String, required:true},
   paymentHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Payment' }],
+  courses : [{
+    url1: { type: String , default: 'PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt' },
+    url2: { type: String , default: 'PLXwTOG3-tRwiJmAyVJ47SVvv-dUIy2S0I' },
+    url3: { type: String , default: 'PLXwTOG3-tRwgy4lJ9j_CPwpJmr2uCaGH1' },
+  }]
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);
