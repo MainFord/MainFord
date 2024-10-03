@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   photoUrl: { 
     type: String, 
-    default:'https://ideogram.ai/assets/progressive-image/balanced/response/6z5HqcytSX2hHcE3AxKUBg' 
+    default: 'https://ideogram.ai/assets/progressive-image/balanced/response/6z5HqcytSX2hHcE3AxKUBg' 
   },
   adminApproved: { type: Boolean, default: false },
   referralCode: { type: String, unique: true, required: true }, 
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     ref: 'User',
     default: null  
   },
-  paymentUrlOfReg: { type: String, required:true },
+  paymentUrlOfReg: { type: String, required: true },
   paymentHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Payment' }],
   courses: {
     type: [{
@@ -52,8 +52,16 @@ const userSchema = new mongoose.Schema({
       url2: 'PLXwTOG3-tRwiJmAyVJ47SVvv-dUIy2S0I',
       url3: 'PLXwTOG3-tRwgy4lJ9j_CPwpJmr2uCaGH1',
     }]
+  },
+  images: {
+    type: [String],
+    default: [
+      'https://ideogram.ai/assets/progressive-image/balanced/response/wUu8Po0rQ0WrA5OqArfPmA',
+      'https://ideogram.ai/assets/progressive-image/balanced/response/dAC7-GSCTz6EI_EvLDS79A',
+      'https://ideogram.ai/assets/progressive-image/balanced/response/6EOusTEdRIiBoBmpWM3BmA',
+      'https://ideogram.ai/assets/image/lossless/response/b_r77_V0SqCSlVDlqQ5jdg'
+    ]
   }
 }, { timestamps: true });
-
 
 export default mongoose.model('User', userSchema);
