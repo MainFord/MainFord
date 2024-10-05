@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import db from './config/db.js';
+import { protect } from './middlewares/authMiddleware.js';
 
 dotenv.config();
 
@@ -16,6 +17,14 @@ app.use(express.json());
 app.get('/', (req, res) => { 
     res.json({ "success": true }); 
 });
+
+// Expose multiple API keys via a single route
+app.get('/api/config/keys',protect, (req, res) => {
+    res.json({
+        youtubeApiKey: process.env.YOUTUBE_API_KEY,
+    });
+});
+
 
 // User and Admin Routes
 app.use('/api/users', userRoutes);
