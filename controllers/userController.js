@@ -126,7 +126,8 @@ export const getUserProfile = async (req, res) => {
     adminApproved: user.adminApproved,
     photoUrl: user.photoUrl,
     referredBy: user.referredBy,
-    courses: user.courses
+    courses: user.courses,
+    images: user.images
   });
 };
 
