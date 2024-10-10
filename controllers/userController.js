@@ -6,7 +6,8 @@ import { sendEmail } from '../config/nodemailer.js';
 import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
-import { generateMemorablePassword } from '../utils/passwod.js'
+import { generateMemorablePassword } from '../utils/passwod.js';
+import { encrypt } from '../utils/encryptUtils.js'
 
 export const registerUser = async (req, res) => {
   const { name, email, phone, dob, referredBy } = req.body;
