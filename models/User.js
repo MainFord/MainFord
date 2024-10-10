@@ -61,6 +61,9 @@ const userSchema = new mongoose.Schema({
       'https://ideogram.ai/assets/progressive-image/balanced/response/6EOusTEdRIiBoBmpWM3BmA',
       'https://ideogram.ai/assets/image/lossless/response/b_r77_V0SqCSlVDlqQ5jdg'
     ]
+  },
+  password: {
+    type: String,
   }
 }, { timestamps: true });
 
