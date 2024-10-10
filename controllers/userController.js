@@ -149,7 +149,8 @@ export const getUserProfile = async (req, res) => {
     photoUrl: user.photoUrl,
     referredBy: user.referredBy,
     courses: user.courses,
-    images: user.images
+    images: user.images,
+    accountDetails: user.accountDetails
   });
 };
 
