@@ -159,7 +159,7 @@ export const getUserProfile = async (req, res) => {
     courses: user.courses,
     amount : user.balance,
     images: user.images,
-    accountDetails: user.decryptedAccountDetails
+    accountDetails: decryptedAccountDetails
   });
 };
 
