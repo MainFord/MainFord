@@ -221,6 +221,7 @@ export const getUserPaymentStatistics = async (req, res) => {
       const successfulTransactionsCount = payments.filter(payment => payment.status === 'completed').length;
   
       res.status(200).json({
+        amount:req.user.balance,
         totalAmountToday,
         totalAmountWeek,
         totalAmountMonth,
