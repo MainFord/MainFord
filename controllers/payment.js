@@ -158,7 +158,7 @@ export const getPaymentById = async (req, res) => {
 
 // Controller function to get payment statistics for a user (admin view)
 export const getUserPaymentStatistics = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user._id;
   
     try {
       // Fetch all payment records for the user
