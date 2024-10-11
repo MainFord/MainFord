@@ -24,19 +24,19 @@ router.post('/withdrawal', protect, async (req, res) => {
 });
 
 // Route to add balance to a user's account (Admin route)
-router.post('/add-balance', protect, adminAuth, async (req, res) => {
+router.post('/add-balance', adminAuth, async (req, res) => {
   console.log("Admin adding balance to user ID:", req.body.userId);
   await addBalanceToUser(req, res);
 });
 
 // Route to update payment status (Admin route)
-router.put('/update-status/:paymentId', protect, adminAuth, async (req, res) => {
+router.put('/update-status/:paymentId', adminAuth, async (req, res) => {
   console.log(`Admin updating status of payment ID: ${req.params.paymentId}`);
   await updatePaymentStatus(req, res);
 });
 
 // Route to get all requested payments for admin review (Admin route)
-router.get('/requested', protect, adminAuth, async (req, res) => {
+router.get('/requested', adminAuth, async (req, res) => {
   console.log("Admin fetching all requested payments");
   await getRequestedPayments(req, res);
 });
