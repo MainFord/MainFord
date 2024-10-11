@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import pay from './routes/payment.js';
 import db from './config/db.js';
 import { protect } from './middlewares/authMiddleware.js';
 
@@ -28,6 +29,7 @@ app.get('/api/config/keys',protect, (req, res) => {
 
 // User and Admin Routes
 app.use('/api/users', userRoutes);
+app.use('/api/payments', pay)
 app.use('/api/admin', adminRoutes);
 
 // Handle unhandled routes

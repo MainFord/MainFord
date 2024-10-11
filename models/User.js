@@ -64,6 +64,9 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+  },
+  balance: {
+    type: Number,
   }
 }, { timestamps: true });
 

@@ -7,7 +7,7 @@ import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
 import { generateMemorablePassword } from '../utils/passwod.js';
-import { encrypt } from '../utils/encryptUtils.js'
+import { encrypt,decrypt } from '../utils/encryptUtils.js'
 
 export const registerUser = async (req, res) => {
   const { name, email, phone, dob, referredBy } = req.body;
@@ -137,7 +137,14 @@ export const loginUser = async (req, res) => {
 // Get authenticated user profile
 export const getUserProfile = async (req, res) => {
   const user = req.user;  // User is attached from the protect middleware
-
+  let decryptedAccountDetails = null;
+  if (user.accountDetails) {
+    decryptedAccountDetails = {
+      accountNumber: decrypt(user.accountDetails.accountNumber),
+      ifsc: decrypt(user.accountDetails.ifsc),
+      holderName: decrypt(user.accountDetails.holderName),
+    };
+  }
 
   res.status(200).json({
     name: user.name,
@@ -151,7 +158,7 @@ export const getUserProfile = async (req, res) => {
     referredBy: user.referredBy,
     courses: user.courses,
     images: user.images,
-    accountDetails: user.accountDetails
+    accountDetails: user.decryptedAccountDetails
   });
 };
 
