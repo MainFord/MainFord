@@ -134,33 +134,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Get authenticated user profile
 export const getUserProfile = async (req, res) => {
-  const user = req.user;  // User is attached from the protect middleware
-  let decryptedAccountDetails = null;
-  if (user.accountDetails) {
-    decryptedAccountDetails = {
-      accountNumber: decrypt(user.accountDetails.accountNumber),
-      ifsc: decrypt(user.accountDetails.ifsc),
-      holderName: decrypt(user.accountDetails.holderName),
-    };
+  try {
+    const user = req.user; // User is attached from the protect middleware
+    res.status(200).json(formatUserResponse(user));
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Server error' });
   }
-
-  res.status(200).json({
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    dob: user.dob,
-    referralCode: user.referralCode,
-    paymentHistory: user.paymentHistory,
-    adminApproved: user.adminApproved,
-    photoUrl: user.photoUrl,
-    referredBy: user.referredBy,
-    courses: user.courses,
-    amount : user.balance,
-    images: user.images,
-    accountDetails: decryptedAccountDetails
-  });
 };
 
 export const checkAdminApprove = async (req,res) => {
@@ -171,17 +152,17 @@ export const checkAdminApprove = async (req,res) => {
 
 // Controller function to update user data
 export const updateUserData = async (req, res) => {
-  const user = req.user; // Assuming the user is authenticated and the middleware has set req.user
-  const { name, email, phone, dob, accountDetails, photoUrl, password, adminApproved } = req.body;
-
   try {
+    const user = req.user; // Assuming the user is authenticated and the middleware has set req.user
+    const { name, email, phone, dob, accountDetails, photoUrl, password, adminApproved } = req.body;
+
     // Update the user fields if they exist in the request body
     if (name) user.name = name;
     if (email) user.email = email;
     if (phone) user.phone = phone;
     if (dob) user.dob = dob;
     if (photoUrl) user.photoUrl = photoUrl;
-    if (adminApproved) user.adminApproved = adminApproved;
+    if (adminApproved !== undefined) user.adminApproved = adminApproved;
 
     // Update account details if provided
     if (accountDetails) {
@@ -200,9 +181,37 @@ export const updateUserData = async (req, res) => {
     // Save the updated user document
     await user.save();
 
-    res.status(200).json({ message: 'User updated successfully', user });
+    res.status(200).json(formatUserResponse(user));
   } catch (error) {
     console.error('Error updating user data:', error);
     res.status(500).json({ message: 'Server error' });
   }
+};
+
+const formatUserResponse = (user) => {
+  let decryptedAccountDetails = null;
+  if (user.accountDetails) {
+    decryptedAccountDetails = {
+      accountNumber: decrypt(user.accountDetails.accountNumber),
+      ifsc: decrypt(user.accountDetails.ifsc),
+      holderName: decrypt(user.accountDetails.holderName),
+    };
+  }
+
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    dob: user.dob,
+    referralCode: user.referralCode,
+    paymentHistory: user.paymentHistory,
+    adminApproved: user.adminApproved,
+    photoUrl: user.photoUrl,
+    referredBy: user.referredBy,
+    courses: user.courses,
+    balance: user.balance,
+    images: user.images,
+    accountDetails: decryptedAccountDetails
+  };
 };
