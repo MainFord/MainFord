@@ -156,7 +156,6 @@ export const getPaymentById = async (req, res) => {
   }
 };
 
-// Controller function to get payment statistics for a user (admin view)
 export const getUserPaymentStatistics = async (req, res) => {
     const userId = req.user._id;
   
@@ -170,25 +169,43 @@ export const getUserPaymentStatistics = async (req, res) => {
       const monthStart = moment().startOf('month');
       const yearStart = moment().startOf('year');
   
-      const totalAmountToday = payments
-        .filter(payment => moment(payment.createdAt).isAfter(today))
+      // Calculate total amount withdrawn and deposited today
+      const totalWithdrawnToday = payments
+        .filter(payment => payment.type === 'withdrawal' && payment.status === 'completed' && moment(payment.createdAt).isAfter(today))
         .reduce((total, payment) => total + payment.amount, 0);
   
-      const totalAmountWeek = payments
-        .filter(payment => moment(payment.createdAt).isAfter(weekStart))
+      const totalDepositedToday = payments
+        .filter(payment => payment.type === 'deposit' && payment.status === 'completed' && moment(payment.createdAt).isAfter(today))
         .reduce((total, payment) => total + payment.amount, 0);
   
-      const totalAmountMonth = payments
-        .filter(payment => moment(payment.createdAt).isAfter(monthStart))
+      // Calculate total amount withdrawn and deposited this week
+      const totalWithdrawnWeek = payments
+        .filter(payment => payment.type === 'withdrawal' && payment.status === 'completed' && moment(payment.createdAt).isAfter(weekStart))
         .reduce((total, payment) => total + payment.amount, 0);
   
-      const totalAmountYear = payments
-        .filter(payment => moment(payment.createdAt).isAfter(yearStart))
+      const totalDepositedWeek = payments
+        .filter(payment => payment.type === 'deposit' && payment.status === 'completed' && moment(payment.createdAt).isAfter(weekStart))
         .reduce((total, payment) => total + payment.amount, 0);
   
-      const totalPayments = payments.length;
+      // Calculate total amount withdrawn and deposited this month
+      const totalWithdrawnMonth = payments
+        .filter(payment => payment.type === 'withdrawal' && payment.status === 'completed' && moment(payment.createdAt).isAfter(monthStart))
+        .reduce((total, payment) => total + payment.amount, 0);
   
-      // Additional statistics
+      const totalDepositedMonth = payments
+        .filter(payment => payment.type === 'deposit' && payment.status === 'completed' && moment(payment.createdAt).isAfter(monthStart))
+        .reduce((total, payment) => total + payment.amount, 0);
+  
+      // Calculate total amount withdrawn and deposited this year
+      const totalWithdrawnYear = payments
+        .filter(payment => payment.type === 'withdrawal' && payment.status === 'completed' && moment(payment.createdAt).isAfter(yearStart))
+        .reduce((total, payment) => total + payment.amount, 0);
+  
+      const totalDepositedYear = payments
+        .filter(payment => payment.type === 'deposit' && payment.status === 'completed' && moment(payment.createdAt).isAfter(yearStart))
+        .reduce((total, payment) => total + payment.amount, 0);
+  
+      // Calculate overall statistics
       const totalWithdrawals = payments
         .filter(payment => payment.type === 'withdrawal' && payment.status === 'completed')
         .reduce((total, payment) => total + payment.amount, 0);
@@ -220,23 +237,28 @@ export const getUserPaymentStatistics = async (req, res) => {
   
       const successfulTransactionsCount = payments.filter(payment => payment.status === 'completed').length;
   
+      // Send the response with separate statistics for each time frame and type
       res.status(200).json({
-        amount:req.user.balance,
-        totalAmountToday,
-        totalAmountWeek,
-        totalAmountMonth,
-        totalAmountYear,
-        totalPayments,
-        totalWithdrawals,
-        totalDeposits,
-        numberOfWithdrawals,
-        numberOfDeposits,
-        pendingWithdrawals,
-        rejectedWithdrawals,
-        numberOfRejectedWithdrawals,
-        averageWithdrawalAmount,
-        averageDepositAmount,
-        successfulTransactionsCount,
+        balance: req.user.balance, // User's current balance
+        totalWithdrawnToday,
+        totalDepositedToday,
+        totalWithdrawnWeek,
+        totalDepositedWeek,
+        totalWithdrawnMonth,
+        totalDepositedMonth,
+        totalWithdrawnYear,
+        totalDepositedYear,
+        totalPayments: payments.length, // Total number of payments (includes all statuses)
+        totalWithdrawals, // Total amount withdrawn
+        totalDeposits, // Total amount deposited
+        numberOfWithdrawals, // Total number of withdrawals
+        numberOfDeposits, // Total number of deposits
+        pendingWithdrawals, // Total amount of pending withdrawals
+        rejectedWithdrawals, // Total amount of rejected withdrawals
+        numberOfRejectedWithdrawals, // Number of rejected withdrawals
+        averageWithdrawalAmount, // Average withdrawal amount
+        averageDepositAmount, // Average deposit amount
+        successfulTransactionsCount, // Total number of successful transactions
         payments, // Include detailed payment history
       });
     } catch (error) {
@@ -244,4 +266,3 @@ export const getUserPaymentStatistics = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   };
-  
