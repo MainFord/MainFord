@@ -215,3 +215,51 @@ const formatUserResponse = (user) => {
     accountDetails: decryptedAccountDetails
   };
 };
+
+
+import nodemailer from 'nodemailer'; // Make sure your user model is properly imported
+
+// Generate a JWT Token for password reset
+const generateResetToken = (userId) => {
+  const secret = process.env.JWT_SECRET + userId;
+  return jwt.sign({ id: userId }, secret, { expiresIn: '1h' });
+};
+
+// Function to send the password reset email
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user) return res.status(200).json({ message: 'Reset password email sent' })
+
+    // Generate the reset token
+    const token = generateResetToken(user._id);
+
+    // Reset password URL
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+
+    // Send the reset password email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USERNAME,
+      to: user.email,
+      subject: 'Password Reset',
+      html: `<p>You requested to reset your password. Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: 'Reset password email sent' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error sending reset email', error });
+  }
+};
