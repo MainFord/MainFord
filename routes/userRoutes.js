@@ -64,7 +64,7 @@ router.put('/update', protect , async (req,res)=>{
   await updateUserData(req, res);
 })
 
-router.put('/reset-pass',async (req,res)=>{
+router.post('/reset-pass',async (req,res)=>{
   await forgotPassword(req, res);
 })
 
