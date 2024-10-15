@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 import { encrypt, decrypt } from '../utils/encryptUtils.js';
 
+// Helper function to generate a placeholder URL with initials
+function generatePlaceholderUrl(name) {
+  const initials = name.split(' ').map(word => word[0]).join('').toUpperCase();
+  return `https://ui-avatars.com/api/?name=${initials}&background=random&size=128`;
+}
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -30,7 +36,9 @@ const userSchema = new mongoose.Schema({
   },
   photoUrl: { 
     type: String, 
-    default: 'https://ideogram.ai/assets/progressive-image/balanced/response/6z5HqcytSX2hHcE3AxKUBg' 
+    default: function() {
+      return generatePlaceholderUrl(this.name);
+    }
   },
   adminApproved: { type: Boolean, default: false },
   referralCode: { type: String, unique: true, required: true }, 
