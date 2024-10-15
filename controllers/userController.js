@@ -7,7 +7,8 @@ import cloudinary from '../config/cloudinary.js';
 import { generateReferralCode } from '../utils/referralCode.js';
 import { emailVerificationTemplate } from '../utils/emailTemplates.js';
 import { generateMemorablePassword } from '../utils/passwod.js';
-import { encrypt,decrypt } from '../utils/encryptUtils.js'
+import { encrypt,decrypt } from '../utils/encryptUtils.js';
+import Payment from '../models/Payment.js'
 
 export const registerUser = async (req, res) => {
   const { name, email, phone, dob, referredBy } = req.body;
@@ -79,6 +80,13 @@ export const registerUser = async (req, res) => {
     //  );
 
     const token = generateToken(newUser._id);
+
+    await Payment.create({
+      userId: newUser._id,
+      type: 'deposit',
+      amount:250,
+      status: 'completed',
+    })
     res.status(201).json({ newUser, token });
   } catch (error) {
     console.error("Error in registerUser:", error);
