@@ -19,6 +19,7 @@ export const adminLogin = async (req, res) => {
   try {
     const adminUsername = process.env.ADMIN_USER;
     const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+    const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (username !== adminUsername) {
       return res.status(403).json({ message: 'Invalid admin credentials.' });

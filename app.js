@@ -14,6 +14,9 @@ const app = express();
 db();
 app.use(express.json());
 
+// Use cookie-parser middleware
+app.use(cookieParser());
+
 // Sample route
 app.get('/', (req, res) => { 
     res.json({ "success": true }); 
