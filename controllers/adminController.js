@@ -153,7 +153,7 @@ export const getAllUsers = async (req, res) => {
 
     // Query the database with filters, sorting, and pagination
     const usersPromise = User.find(parsedFilter)
-      .select('name') // Exclude password from the response
+      .select('name email') // Exclude password from the response
       .sort(sortOptions)
       .skip(skip)
       .limit(limit)
