@@ -106,5 +106,8 @@ router.put('/payments/:paymentId', adminAuth, updatePaymentDetails);
 /**
  * Additional admin routes can be added here following the same pattern.
  */
+router.get('/check-auth', adminAuth, (req, res) => {
+  res.status(200).json({ message: 'Authenticated' });
+});
 
 export default router;
