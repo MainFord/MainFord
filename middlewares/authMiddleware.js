@@ -27,7 +27,7 @@ export const protect = async (req, res, next) => {
 };
 
 export const adminAuth = (req, res, next) => {
-  const token = req.cookies[process.env.COOKIE_NAME];
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : req.cookies[process.env.COOKIE_NAME] ;
 
   if (!token) {
     return res.status(401).json({ message: 'Authentication required.' });
