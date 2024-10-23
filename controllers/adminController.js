@@ -152,9 +152,7 @@ export const getAllUsers = async (req, res) => {
     sortOptions[sortField] = sortOrder === 'ASC' ? 1 : -1;
 
     // Query the database with filters, sorting, and pagination
-    const usersPromise = User.find(parsedFilter)
-      .populate('referredBy', 'name email')
-      .populate('paymentHistory')
+    const usersPromise = User.find(parsedFilter).populate('name')
       .select('-password') // Exclude password from the response
       .sort(sortOptions)
       .skip(skip)
