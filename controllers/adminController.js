@@ -305,7 +305,3 @@ export const updatePaymentDetails = async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 };
-
-router.get('/check-auth', adminAuth, (req, res) => {
-  res.status(200).json({ message: 'Authenticated' });
-});

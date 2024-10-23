@@ -95,7 +95,9 @@ router.get('/payments/:paymentId', adminAuth, getPaymentById);
  * @access  Protected
  */
 router.delete('/payments/:paymentId', adminAuth, deletePayment);
-
+router.get('/check-auth', adminAuth, (req, res) => {
+  res.status(200).json({ message: 'Authenticated' });
+});
 /**
  * @route   PUT /admin/payments/:paymentId
  * @desc    Update payment details by ID
@@ -106,8 +108,4 @@ router.put('/payments/:paymentId', adminAuth, updatePaymentDetails);
 /**
  * Additional admin routes can be added here following the same pattern.
  */
-router.get('/check-auth', adminAuth, (req, res) => {
-  res.status(200).json({ message: 'Authenticated' });
-});
-
 export default router;
