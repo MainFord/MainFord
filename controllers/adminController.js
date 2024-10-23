@@ -45,7 +45,7 @@ export const adminLogin = async (req, res) => {
     res.cookie(process.env.COOKIE_NAME, token, {
       httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
       secure: process.env.NODE_ENV === 'production', // Ensures the browser only sends the cookie over HTTPS
-      sameSite: 'strict', // Protects against CSRF
+      sameSite: 'none', // Protects against CSRF
       maxAge: parseInt(process.env.COOKIE_MAX_AGE) // Cookie expiration in milliseconds
     });
 
