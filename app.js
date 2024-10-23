@@ -33,7 +33,7 @@ const allowedOrigins = [
     },
     credentials: true, // Allow cookies and authentication headers
     exposedHeaders: ['Content-Range'], // Expose specific headers
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+    allowedHeaders: ['Content-Type', 'Authorization', 'Range'], // Allow specific headers
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Allow specific HTTP methods
   }));
 
