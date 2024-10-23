@@ -5,6 +5,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import pay from './routes/payment.js';
 import db from './config/db.js';
 import { protect } from './middlewares/authMiddleware.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
