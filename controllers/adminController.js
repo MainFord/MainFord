@@ -49,7 +49,7 @@ export const adminLogin = async (req, res) => {
       maxAge: parseInt(process.env.COOKIE_MAX_AGE) // Cookie expiration in milliseconds
     });
 
-    res.status(200).json({ message: 'Admin logged in successfully.' });
+    res.status(200).json({ message: 'Admin logged in successfully.', token });
   } catch (error) {
     console.error('Admin Login Error:', error);
     res.status(500).json({ message: 'Internal server error.' });
