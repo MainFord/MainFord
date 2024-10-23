@@ -15,13 +15,27 @@ const app = express();
 
 db();
 app.use(express.json());
-app.use(cors({
-    origin: '*', // Frontend URL
+const allowedOrigins = [
+    'https://musical-rotary-phone-g47x75gr6g4w395rw-3000.app.github.dev',
+    'https://your-production-domain.com',
+    // Add more origins as needed
+  ];
+  
+  app.use(cors({
+    origin: function(origin, callback){
+      // Allow requests with no origin (like mobile apps, curl requests)
+      if(!origin) return callback(null, true);
+      if(allowedOrigins.indexOf(origin) === -1){
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     credentials: true, // Allow cookies and authentication headers
     exposedHeaders: ['Content-Range'], // Expose specific headers
     allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Allow specific HTTP methods
-}));
+  }));
 
 
 
