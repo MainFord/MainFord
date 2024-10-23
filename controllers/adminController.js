@@ -170,8 +170,8 @@ export const getAllUsers = async (req, res) => {
 
     // Respond with the data in the format expected by React Admin
     res.status(200).json({
-      data: users,
-      total: total,
+      data: {users},
+      total: {total},
     });
   } catch (error) {
     console.error('Get All Users Error:', error);
