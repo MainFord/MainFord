@@ -132,11 +132,44 @@ export const approveUser = async (req, res) => {
  */
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find()
+    // Extract query parameters
+    const { filter = '{}', range = '[0, 9]', sort = '["id", "ASC"]' } = req.query;
+
+    // Parse JSON strings into objects/arrays
+    const parsedFilter = JSON.parse(filter);
+    const parsedRange = JSON.parse(range);
+    const parsedSort = JSON.parse(sort);
+
+    // Determine pagination values
+    const [start, end] = parsedRange;
+    const limit = end - start + 1;
+    const skip = start;
+
+    // Determine sorting
+    const [sortField, sortOrder] = parsedSort;
+    const sortOptions = {};
+    sortOptions[sortField] = sortOrder === 'ASC' ? 1 : -1;
+
+    // Query the database with filters, sorting, and pagination
+    const usersPromise = User.find(parsedFilter)
       .populate('referredBy', 'name email')
       .populate('paymentHistory')
-      .select('-password'); // Exclude password from the response
+      .select('-password') // Exclude password from the response
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
 
+    // Get total count for pagination
+    const countPromise = User.countDocuments(parsedFilter).exec();
+
+    // Execute both promises in parallel
+    const [users, total] = await Promise.all([usersPromise, countPromise]);
+
+    // Set the Content-Range header for frontend
+    res.setHeader('Content-Range', `users ${start}-${end}/${total}`);
+
+    // Respond with the users
     res.status(200).json(users);
   } catch (error) {
     console.error('Get All Users Error:', error);
