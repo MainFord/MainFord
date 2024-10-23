@@ -15,7 +15,10 @@ const app = express();
 
 db();
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+    origin: 'https://musical-rotary-phone-g47x75gr6g4w395rw-3000.app.github.dev', // Replace with your frontend URL
+    credentials: true, // Allow cookies to be sent
+}));
 
 // Use cookie-parser middleware
 app.use(cookieParser());
