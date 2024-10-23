@@ -130,10 +130,11 @@ export const approveUser = async (req, res) => {
 /**
  * Get All Users
  */
+
 export const getAllUsers = async (req, res) => {
   try {
-    // Extract query parameters
-    const { filter = '{}', range = '[0, 9]', sort = '["id", "ASC"]' } = req.query;
+    // Extract query parameters with default values
+    const { filter = '{}', range = '[0,9]', sort = '["id","ASC"]' } = req.query;
 
     // Parse JSON strings into objects/arrays
     const parsedFilter = JSON.parse(filter);
@@ -166,16 +167,20 @@ export const getAllUsers = async (req, res) => {
     // Execute both promises in parallel
     const [users, total] = await Promise.all([usersPromise, countPromise]);
 
-    // Set the Content-Range header for frontend
+    // Set the Content-Range header for frontend (optional, but good practice)
     res.setHeader('Content-Range', `users ${start}-${end}/${total}`);
 
-    // Respond with the users
-    res.status(200).json(users);
+    // Respond with the data in the format expected by React Admin
+    res.status(200).json({
+      data: users,
+      total: total,
+    });
   } catch (error) {
     console.error('Get All Users Error:', error);
     res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
 
 /**
  * Get User by ID
