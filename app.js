@@ -16,12 +16,13 @@ const app = express();
 db();
 app.use(express.json());
 app.use(cors({
-    origin: 'https://musical-rotary-phone-g47x75gr6g4w395rw-3000.app.github.dev', // Replace with your frontend URL
-    credentials: true, // Allow cookies to be sent
-    exposedHeaders: ['Content-Range'],
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow Authorization header
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Explicitly allow HTTP methods
+    origin: '*', // Frontend URL
+    credentials: true, // Allow cookies and authentication headers
+    exposedHeaders: ['Content-Range'], // Expose specific headers
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Allow specific HTTP methods
 }));
+
 
 
 // Use cookie-parser middleware
