@@ -6,7 +6,7 @@ import pay from './routes/payment.js';
 import db from './config/db.js';
 import { protect } from './middlewares/authMiddleware.js';
 import cookieParser from 'cookie-parser';
-// import cors from 'cors';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const app = express();
 
 db();
 app.use(express.json());
-// app.use(cors())
+app.use(cors())
 
 // Use cookie-parser middleware
 app.use(cookieParser());
