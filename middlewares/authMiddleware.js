@@ -26,14 +26,24 @@ export const protect = async (req, res, next) => {
   }
 };
 
-
 export const adminAuth = (req, res, next) => {
-    const { username, password } = req.headers;
-  
-    if (username === process.env.ADMIN_USER && password === process.env.ADMIN_PASSWORD) {
-      next();
-    } else {
-      res.status(403).json({ message: 'Unauthorized' });
+  const token = req.cookies[process.env.COOKIE_NAME];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
-  };
-  
+
+    // Optionally attach admin info to the request object
+    req.admin = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token.' });
+  }
+};
