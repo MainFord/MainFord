@@ -17,7 +17,7 @@ db();
 app.use(express.json());
 const allowedOrigins = [
     'https://musical-rotary-phone-g47x75gr6g4w395rw-3000.app.github.dev',
-    'https://wretched-spooky-broomstick-g47x75gr696rh9rp4-3000.app.github.dev/',
+    'https://wretched-spooky-broomstick-g47x75gr696rh9rp4-3000.app.github.dev',
     // Add more origins as needed
   ];
   
