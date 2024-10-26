@@ -378,6 +378,13 @@ export const updatePaymentDetails = async (req, res) => {
 };
 
 
+// controllers/adminController.js
+
+import User from '../models/User.js'; // Adjust the path as necessary
+
+/**
+ * Get User Referrals (Referral Chain)
+ */
 export const getUserReferrals = async (req, res) => {
   const { userId } = req.params;
 
@@ -399,7 +406,7 @@ export const getUserReferrals = async (req, res) => {
     const referrals = await User.aggregate([
       {
         // Match the root user
-        $match: { _id: mongoose.Types.ObjectId(userId) },
+        $match: { _id: new mongoose.Types.ObjectId(userId) }, // Added 'new' keyword
       },
       {
         // Use $graphLookup to recursively find referred users
@@ -410,6 +417,7 @@ export const getUserReferrals = async (req, res) => {
           connectToField: 'referredBy',
           as: 'referralChain',
           depthField: 'referralLevel', // Optional: To indicate the level of referral
+          maxDepth: 5, // Optional: Limit the recursion to 5 levels
         },
       },
       {
@@ -450,8 +458,9 @@ export const getUserReferrals = async (req, res) => {
   }
 };
 
-
-// Utility function to build a tree from flat referrals
+/**
+ * Utility function to build a tree from flat referrals
+ */
 const buildReferralTree = (user, referrals) => {
   const userMap = {};
 
@@ -475,4 +484,5 @@ const buildReferralTree = (user, referrals) => {
 
   return userMap[user._id.toString()];
 };
+
 
