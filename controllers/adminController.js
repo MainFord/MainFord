@@ -231,7 +231,7 @@ export const updateUserDetails = async (req, res) => {
 
   try {
     // Prevent updating certain fields like password directly
-    const forbiddenFields = ['password', 'adminApproved', 'paymentHistory', 'courses', 'images'];
+    const forbiddenFields = ['password'];
     forbiddenFields.forEach(field => delete updateData[field]);
 
     const user = await User.findByIdAndUpdate(userId, updateData, { new: true })
