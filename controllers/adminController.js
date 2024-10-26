@@ -255,11 +255,48 @@ export const updateUserDetails = async (req, res) => {
  */
 export const getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find()
-      .populate('userId', 'name email') // Populate user details
-      .sort({ requestDate: -1 }); // Sort by most recent
+    // Extract query parameters with default values
+    const { filter = '{}', range = '[0,9]', sort = '["requestDate","DESC"]' } = req.query;
 
-    res.status(200).json(payments);
+    // Parse JSON strings into objects/arrays
+    const parsedFilter = JSON.parse(filter);
+    const parsedRange = JSON.parse(range);
+    const parsedSort = JSON.parse(sort);
+
+    // Validate parsedRange
+    if (!Array.isArray(parsedRange) || parsedRange.length !== 2) {
+      return res.status(400).json({ message: 'Invalid range parameter.' });
+    }
+
+    // Validate parsedSort
+    if (!Array.isArray(parsedSort) || parsedSort.length !== 2) {
+      return res.status(400).json({ message: 'Invalid sort parameter.' });
+    }
+
+    const [start, end] = parsedRange;
+    const limit = end - start + 1;
+    const skip = start;
+
+    const [sortField, sortOrder] = parsedSort;
+    const sortOptions = {};
+    sortOptions[sortField] = sortOrder.toUpperCase() === 'ASC' ? 1 : -1;
+
+    // Query the database with filters, sorting, and pagination
+    const paymentsPromise = Payment.find(parsedFilter)
+      .populate('userId', 'name email') // Populate user details
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    // Get total count for pagination
+    const countPromise = Payment.countDocuments(parsedFilter).exec();
+
+    // Execute both promises in parallel
+    const [payments, total] = await Promise.all([paymentsPromise, countPromise]);
+
+    // Respond with the data and total count
+    res.status(200).json({ data: payments, total });
   } catch (error) {
     console.error('Get All Payments Error:', error);
     res.status(500).json({ message: 'Internal server error.' });
