@@ -265,12 +265,12 @@ export const getAllPayments = async (req, res) => {
 
     // Validate parsedRange
     if (!Array.isArray(parsedRange) || parsedRange.length !== 2) {
-      return res.status(400).json({ message: 'Invalid range parameter.' });
+      return res.status(400).json({ message: 'Invalid range parameter. Expected format: [start, end]' });
     }
 
     // Validate parsedSort
     if (!Array.isArray(parsedSort) || parsedSort.length !== 2) {
-      return res.status(400).json({ message: 'Invalid sort parameter.' });
+      return res.status(400).json({ message: 'Invalid sort parameter. Expected format: ["field", "order"]' });
     }
 
     const [start, end] = parsedRange;
