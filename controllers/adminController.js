@@ -169,8 +169,8 @@ export const getAllUsers = async (req, res) => {
     res.setHeader('Content-Range', `users ${start}-${end}/${total}`);
 
     // Respond with the data in the format expected by React Admin
-    res.status(200).json({     "data": [         {             "id": "1",             "title": "Hello world",             "body": "Hello world"         },         {            "id": "2",              "title": "Hello world",             "body": "Hello world"         }     ],     "total": 2 });
-  } catch (error) {
+    res.status(200).json({data:users,success:true})
+   } catch (error) {
     console.error('Get All Users Error:', error);
     res.status(500).json({ message: 'Internal server error.' });
   }
