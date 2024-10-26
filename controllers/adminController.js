@@ -379,9 +379,6 @@ export const updatePaymentDetails = async (req, res) => {
 
 
 // controllers/adminController.js
-
-import User from '../models/User.js'; // Adjust the path as necessary
-
 /**
  * Get User Referrals (Referral Chain)
  */
