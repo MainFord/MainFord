@@ -13,7 +13,8 @@ import {
   getAllPayments,
   getPaymentById,
   deletePayment,
-  updatePaymentDetails
+  updatePaymentDetails,
+  getUserReferrals
 } from '../controllers/adminController.js';
 import { adminAuth } from '../middlewares/authMiddleware.js';
 
@@ -104,6 +105,8 @@ router.get('/check-auth', adminAuth, (req, res) => {
  * @access  Protected
  */
 router.put('/payments/:paymentId', adminAuth, updatePaymentDetails);
+
+router.get('/referrals/:userId',adminAuth, getUserReferrals);
 
 /**
  * Additional admin routes can be added here following the same pattern.

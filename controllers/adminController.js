@@ -375,3 +375,103 @@ export const updatePaymentDetails = async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+
+export const getUserReferrals = async (req, res) => {
+  const { userId } = req.params;
+
+  // Validate the userId
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: 'Valid User ID is required.' });
+  }
+
+  try {
+    const user = await User.findById(userId)
+      .select('name email referralCode')
+      .lean(); // Use lean() for plain JavaScript objects
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Aggregation pipeline to fetch referral chain
+    const referrals = await User.aggregate([
+      {
+        // Match the root user
+        $match: { _id: mongoose.Types.ObjectId(userId) },
+      },
+      {
+        // Use $graphLookup to recursively find referred users
+        $graphLookup: {
+          from: 'users', // Collection name in MongoDB (usually the plural of the model name)
+          startWith: '$_id',
+          connectFromField: '_id',
+          connectToField: 'referredBy',
+          as: 'referralChain',
+          depthField: 'referralLevel', // Optional: To indicate the level of referral
+        },
+      },
+      {
+        // Optionally, project only necessary fields
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+          referralCode: 1,
+          referralChain: {
+            _id: 1,
+            name: 1,
+            email: 1,
+            referralCode: 1,
+            referralLevel: 1, // If depthField is used
+          },
+        },
+      },
+    ]);
+
+    if (!referrals || referrals.length === 0) {
+      return res.status(200).json({
+        user,
+        referrals: [],
+      });
+    }
+
+    // Sort referrals by referralLevel if needed
+    referrals[0].referralChain.sort((a, b) => a.referralLevel - b.referralLevel);
+    const referralTree = buildReferralTree(user, referrals[0].referralChain);
+    res.status(200).json({
+      user,
+      referralTree,
+    });
+  } catch (error) {
+    console.error('Get User Referrals Error:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+
+// Utility function to build a tree from flat referrals
+const buildReferralTree = (user, referrals) => {
+  const userMap = {};
+
+  // Initialize the root user in the map
+  userMap[user._id.toString()] = { ...user, referrals: [] };
+
+  // Iterate through referrals and build the map
+  referrals.forEach(ref => {
+    userMap[ref._id.toString()] = { ...ref, referrals: [] };
+  });
+
+  // Link referrals to their referrers
+  referrals.forEach(ref => {
+    if (ref.referredBy) {
+      const referrer = userMap[ref.referredBy.toString()];
+      if (referrer) {
+        referrer.referrals.push(userMap[ref._id.toString()]);
+      }
+    }
+  });
+
+  return userMap[user._id.toString()];
+};
+
