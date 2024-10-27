@@ -120,7 +120,8 @@ export const approveUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-
+    let fr = await User.findById(user.referredBy);
+    fr.balance += 250;
     await Payment.create({
       userId: user.referredBy,
       type: 'deposit',
