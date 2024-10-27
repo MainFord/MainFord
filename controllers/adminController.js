@@ -447,7 +447,7 @@ export const getUserReferrals = async (req, res) => {
     const referralTree = buildReferralTree(user, referrals[0].referralChain);
     res.status(200).json({
       user,
-      referralTree,
+      referrals,
     });
   } catch (error) {
     console.error('Get User Referrals Error:', error);
