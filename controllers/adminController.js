@@ -481,7 +481,7 @@ const buildReferralTree = (user, referrals) => {
   });
   console.log('stage 3'+userMap)
 
-  return userMap[user._id.toString()];
+  return userMap;
 };
 
 
