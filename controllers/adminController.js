@@ -121,6 +121,12 @@ export const approveUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
+    await Payment.create({
+      userId: user.referredBy,
+      type: 'deposit',
+      amount:250,
+      status: 'completed',
+    })
     res.status(200).json(user);
   } catch (error) {
     console.error('Approve User Error:', error);
