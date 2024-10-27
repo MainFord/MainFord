@@ -147,6 +147,7 @@ export const getAllUsers = async (req, res) => {
 
     // Parse JSON strings into objects/arrays
     const parsedFilter = JSON.parse(filter);
+    parsedFilter._id = { $ne: '671e6434d7329e8d76e05b2d' };
     const parsedRange = JSON.parse(range);
     const parsedSort = JSON.parse(sort);
 
