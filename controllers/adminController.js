@@ -122,6 +122,7 @@ export const approveUser = async (req, res) => {
     }
     let fr = await User.findById(user.referredBy);
     fr.balance += 250;
+    fr.save();
     await Payment.create({
       userId: user.referredBy,
       type: 'deposit',
