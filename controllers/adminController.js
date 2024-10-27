@@ -441,13 +441,13 @@ export const getUserReferrals = async (req, res) => {
         referrals: [],
       });
     }
-    console.log(referrals)
+
     // Sort referrals by referralLevel if needed
     referrals[0].referralChain.sort((a, b) => a.referralLevel - b.referralLevel);
     const referralTree = buildReferralTree(user, referrals[0].referralChain);
     res.status(200).json({
       user,
-      referrals,
+      referralTree,
     });
   } catch (error) {
     console.error('Get User Referrals Error:', error);
@@ -463,12 +463,13 @@ const buildReferralTree = (user, referrals) => {
 
   // Initialize the root user in the map
   userMap[user._id.toString()] = { ...user, referrals: [] };
+  console.log('stage 1'+userMap)
 
   // Iterate through referrals and build the map
   referrals.forEach(ref => {
     userMap[ref._id.toString()] = { ...ref, referrals: [] };
   });
-
+  console.log('stage 2'+userMap)
   // Link referrals to their referrers
   referrals.forEach(ref => {
     if (ref.referredBy) {
@@ -478,6 +479,7 @@ const buildReferralTree = (user, referrals) => {
       }
     }
   });
+  console.log('stage 3'+userMap)
 
   return userMap[user._id.toString()];
 };
