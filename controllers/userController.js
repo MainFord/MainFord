@@ -96,7 +96,7 @@ export const getReferrals = async (req, res) => {
 
   try {
     // Find users referred by the authenticated user
-    const referrals = await User.find({ referredBy: user._id }).select('name email');
+    const referrals = await User.find({ referredBy: user._id,adminApproved:true }).select('name email');
 
     // Count the number of referrals
     const referralCount = referrals.length;
