@@ -441,7 +441,7 @@ export const getUserReferrals = async (req, res) => {
         referrals: [],
       });
     }
-
+    console.log(referrals)
     // Sort referrals by referralLevel if needed
     referrals[0].referralChain.sort((a, b) => a.referralLevel - b.referralLevel);
     const referralTree = buildReferralTree(user, referrals[0].referralChain);
