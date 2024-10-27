@@ -430,6 +430,7 @@ export const getUserReferrals = async (req, res) => {
             email: 1,
             referralCode: 1,
             referralLevel: 1, // If depthField is used
+            referredBy: 1, 
           },
         },
       },
@@ -463,13 +464,12 @@ const buildReferralTree = (user, referrals) => {
 
   // Initialize the root user in the map
   userMap[user._id.toString()] = { ...user, referrals: [] };
-  console.log('stage 1'+userMap)
 
   // Iterate through referrals and build the map
   referrals.forEach(ref => {
     userMap[ref._id.toString()] = { ...ref, referrals: [] };
   });
-  console.log('stage 2'+userMap)
+
   // Link referrals to their referrers
   referrals.forEach(ref => {
     if (ref.referredBy) {
@@ -479,9 +479,8 @@ const buildReferralTree = (user, referrals) => {
       }
     }
   });
-  console.log('stage 3'+userMap)
 
-  return userMap;
+  return userMap[user._id.toString()];
 };
 
 
