@@ -413,8 +413,7 @@ export const getUserReferrals = async (req, res) => {
           connectFromField: '_id',
           connectToField: 'referredBy',
           as: 'referralChain',
-          depthField: 'referralLevel', // Optional: To indicate the level of referral
-          maxDepth: 5, // Optional: Limit the recursion to 5 levels
+          depthField: 'referralLevel', // Optional: To indicate the level of referra
         },
       },
       {

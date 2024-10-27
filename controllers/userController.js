@@ -82,11 +82,12 @@ export const registerUser = async (req, res) => {
     const token = generateToken(newUser._id);
 
     await Payment.create({
-      userId: newUser._id,
+      userId: referrerId,
       type: 'deposit',
       amount:250,
       status: 'completed',
     })
+
     res.status(201).json({ newUser, token });
   } catch (error) {
     console.error("Error in registerUser:", error);
