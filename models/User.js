@@ -64,10 +64,8 @@ const userSchema = new mongoose.Schema({
   images: {
     type: [String],
     default: [
-      'https://ideogram.ai/assets/progressive-image/balanced/response/wUu8Po0rQ0WrA5OqArfPmA',
-      'https://ideogram.ai/assets/progressive-image/balanced/response/dAC7-GSCTz6EI_EvLDS79A',
-      'https://ideogram.ai/assets/progressive-image/balanced/response/6EOusTEdRIiBoBmpWM3BmA',
-      'https://ideogram.ai/assets/image/lossless/response/b_r77_V0SqCSlVDlqQ5jdg'
+      'https://i.imgur.com/RfHjPCS.jpeg',
+      'https://i.imgur.com/2YJTZMM.jpeg',
     ]
   },
   password: {
